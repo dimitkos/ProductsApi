@@ -1,81 +1,105 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WebServer.Models;
-using System.Linq;
 
-namespace WebServer.Controllers
-{
+namespace WebServer.Controllers {
 
-    //κανω  attibute to route
     [Route("api/[controller]")]
-
-    public class ProductsController : Controller
-    {
+    public class ProductsController : Controller {
 
         [HttpGet]
-        public Product[] Get()
-        {
-            //me thn methodo get pernw tis times tis listas kai tis topothetw se array
-            return FakeData.Products.Values.ToArray();
-        }
 
-        //edw twra tha kanoume get me ena sygkekrimeno id 
-        [HttpGet("{id}")]
-        public Product Get(int id)
-        {
-            //elegxei an yparxei to sygkekrimeno id sta kleidia tou dictionary
-            if(FakeData.Products.ContainsKey(id))
+        //kanoume elegxo an den einai kenh h lista epestrepse ta apotelesmata se enan array
+        public ActionResult Get() {
+            if(FakeData.Products != null)
             {
-                return FakeData.Products[id];
-                
+                return Ok(FakeData.Products.Values.ToArray());
             }
             else
             {
-                return null;
+                return NotFound();
             }
-
+            
         }
 
-        //vazoume action gia to post 
-        [HttpPost]
-        public Product Post([FromBody] Product product)
-        {
-            //sto kainourio id pernei to megisto kleidi apo to dic kai to ayksanei kata ena
-            product.ID = FakeData.Products.Keys.Max()+1;
-            //kai sthn synexeia vazoume mesa sto dictionary to neo kleidi kai value opoy einai ena object typou product
-            FakeData.Products.Add(product.ID,product);
+        [HttpGet("{id}")]
 
-            return product;
-        }
-
-        //ftiaxnoume to action put gia na kanoume update ean to product den yparxei den kanei tipota
-        [HttpPut("{id}")]
-
-        public void Put(int id,[FromBody] Product product)
-        {
-            //elegxoume oti yparxei to key 
+        //an yparxei to key tote tha dwsei to value ,alliws tha vgei mhnyma notfound
+        public ActionResult Get(int id) {
             if (FakeData.Products.ContainsKey(id))
             {
-                //pernw thn value vazwntas mesa se agkiles sto dict thn timh tou key 
-                var target = FakeData.Products[id];
-                //to value ayto einai ena object kai tou vazw ta properties ti times na pernei
-                target.ID=product.ID;
-                target.Name = product.Name;
-                target.Price = product.Price;
+                return Ok(FakeData.Products[id]);
+            }  
+            else
+            {
+                return NotFound();
             }
 
+        }
+
+        [HttpGet("from/{low}/to/{high}")]
+
+        //arxika tha paroume ta products poy einai metaksi ths timhs low kai high
+        //kai sthn synexeia tha ta vazei se enan array
+        public ActionResult Get(int low, int high) {
+            var products = FakeData.Products.Values
+            .Where(p => p.Price >= low && p.Price <= high).ToArray();
+            //tha eleksw an o array einai  h den einai adeios
+            //anexei akti mesa tha to emfamisei alliws mhnyma oti dne vrethike
+            if(products.Length > 0) 
+            {
+                return Ok(products);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        //me thn methodo post  to id tha parei thn megisth timh twn hdh yparxontwn ayksimeno kata 1
+        //sthn synexeia tha to valeis thn lista to id mazi me to object
+        public ActionResult Post([FromBody]Product product) {
+            product.ID = FakeData.Products.Keys.Max() + 1;
+            FakeData.Products.Add(product.ID, product);
+            //kai epistrefei mhnyma oti dhmioygrithike
+            //mesa sto created pername to url tou neodhmioyrghmenou proiontos ,ayto to url  tha einai mesa ston htttp response header
+            return Created($"api/products/{product.ID}",product);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult Put(int id, [FromBody]Product product) {
+            
+            //ean yparxei to key  tote to object pou pername 
+            if (FakeData.Products.ContainsKey(id)) 
+            {
+                
+                var target = FakeData.Products[id];
+                //tha ginoyn initialize ta properties tou
+                target.ID = product.ID;
+                target.Name = product.Name;
+                target.Price = product.Price;
+                return Ok();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-            //elegxei an yparxei to kleidi me to sygkekrimeno id
-            if(FakeData.Products.ContainsKey(id))
+        public ActionResult Delete(int id) {
+            if (FakeData.Products.ContainsKey(id)) 
             {
-                //tote to svhnei
+                //an diagrafei epistrefei mhnyma epityxias
                 FakeData.Products.Remove(id);
+                return Ok();
+            }
+            else
+            {
+                //alliws oti den vrethike
+                return NotFound();
             }
         }
-
-
     }
 }

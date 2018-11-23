@@ -12543,11 +12543,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Δημήτρης\\Desktop\\WebApiApplication\\WebServer\\WebServer.csproj",
+      "projectUniqueName": "C:\\Users\\Δημήτρης\\Desktop\\module3newsetproper\\WebServer\\WebServer.csproj",
       "projectName": "WebServer",
-      "projectPath": "C:\\Users\\Δημήτρης\\Desktop\\WebApiApplication\\WebServer\\WebServer.csproj",
+      "projectPath": "C:\\Users\\Δημήτρης\\Desktop\\module3newsetproper\\WebServer\\WebServer.csproj",
       "packagesPath": "C:\\Users\\Δημήτρης\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Δημήτρης\\Desktop\\WebApiApplication\\WebServer\\obj\\",
+      "outputPath": "C:\\Users\\Δημήτρης\\Desktop\\module3newsetproper\\WebServer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
